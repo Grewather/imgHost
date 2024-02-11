@@ -1,0 +1,38 @@
+*{
+    margin:0;
+    padding:0;
+    box-sizing: border-box;
+}
+
+main{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #2f2e2e;
+    flex-direction: column;
+}
+
+main > h1{
+    color: white;
+    font-family: 'Poppins', sans-serif;
+
+}
+main >h1 > span{
+    color: #ff6b6b;
+}
+.login-btn
+{
+    margin-top: 20px;
+    padding: 10px 20px;
+    border: none;
+    background-color: #ff6b6b;
+    color: white;
+    font-family: 'Poppins', sans-serif;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border-radius: 2px;
+}
+.login-btn:hover{
+    background-color: #ff4d4d;
+}
