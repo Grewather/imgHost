@@ -84,6 +84,8 @@ func LoginCallback(w http.ResponseWriter, r *http.Request) {
 			UserInfo:      userInfo,
 		}
 		db.AddToDb(userInfo.ID, userInfo.Username)
+		// TODO: make some better handling (if cookies wont save, then redirect to login page for example)
+		SetCookie(w, tokenResponse.AccessToken)
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
 		json.NewEncoder(w).Encode(response)

@@ -15,8 +15,8 @@ var Client *mongo.Client
 
 func ConnectToDb() {
 	godotenv.Load(".env")
+
 	serverApi := options.ServerAPI(options.ServerAPIVersion1)
-	// use here env variable
 	opts := options.Client().ApplyURI(os.Getenv("MONGO_URL")).SetServerAPIOptions(serverApi)
 
 	client, err := mongo.Connect(context.TODO(), opts)
