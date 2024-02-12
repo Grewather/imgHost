@@ -6,6 +6,7 @@ import (
 	"github.com/rs/cors"
 	"html/template"
 	"imgHost/handlers/auth"
+	authMiddleware "imgHost/middleware"
 	"net/http"
 )
 
@@ -19,6 +20,7 @@ func Router() http.Handler {
 	})
 	r.Use(corsMiddleware.Handler)
 	r.Use(middleware.StripSlashes)
+	r.Use(authMiddleware.AuthMiddleware)
 
 	r.Handle("/static/*", http.StripPrefix("/static/", http.FileServer(http.Dir("./static"))))
 

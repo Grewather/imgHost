@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"github.com/joho/godotenv"
 	"imgHost/db"
+	"imgHost/utils"
 	"io"
 	"net/http"
 	"net/url"
@@ -17,10 +18,6 @@ type TokenResponse struct {
 	ExpiresIn    int    `json:"expires_in"`
 	RefreshToken string `json:"refresh_token"`
 	Scope        string `json:"scope"`
-}
-type UserInfo struct {
-	ID       string `bson:"id"`
-	Username string `bson:"username"`
 }
 
 func LoginCallback(w http.ResponseWriter, r *http.Request) {
@@ -70,7 +67,7 @@ func LoginCallback(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		userInfo, err := getUserInfo(tokenResponse.AccessToken)
+		userInfo, err := utils.GetUserInfo(tokenResponse.AccessToken)
 		if err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
 			w.Write([]byte("Error getting user info"))
@@ -78,7 +75,7 @@ func LoginCallback(w http.ResponseWriter, r *http.Request) {
 		}
 		response := struct {
 			TokenResponse
-			UserInfo UserInfo `json:"userInfo"`
+			UserInfo utils.UserInfo `json:"userInfo"`
 		}{
 			TokenResponse: tokenResponse,
 			UserInfo:      userInfo,
@@ -93,28 +90,4 @@ func LoginCallback(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusBadRequest)
 		w.Write([]byte("No code provided"))
 	}
-}
-
-func getUserInfo(accessToken string) (UserInfo, error) {
-	req, err := http.NewRequest("GET", "https://discord.com/api/v10/users/@me", nil)
-	if err != nil {
-		return UserInfo{}, err
-	}
-
-	req.Header.Set("Authorization", "Bearer "+accessToken)
-
-	client := &http.Client{}
-	resp, err := client.Do(req)
-	if err != nil {
-		return UserInfo{}, err
-	}
-	defer resp.Body.Close()
-
-	var userInfo UserInfo
-	err = json.NewDecoder(resp.Body).Decode(&userInfo)
-	if err != nil {
-		return UserInfo{}, err
-	}
-
-	return userInfo, nil
 }
