@@ -13,12 +13,13 @@ main{
     flex-direction: column;
 }
 
-main > h1{
+.logo{
     color: white;
     font-family: 'Poppins', sans-serif;
+    margin-bottom: 20px;
 
 }
-main >h1 > span{
+.logo > span{
     color: #ff6b6b;
 }
 .login-btn
@@ -36,3 +37,37 @@ main >h1 > span{
 .login-btn:hover{
     background-color: #ff4d4d;
 }
+
+footer{
+    font-family: 'Poppins', sans-serif;
+    color: white;
+    text-align:center;
+    padding:10px;
+}
+
+footer > ul {
+    list-style: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+footer > ul li {
+    margin-right: 10px;
+}
+
+footer > ul li a {
+    text-decoration: none;
+    color: #ccc2c2;
+}
+footer > ul li a:hover {
+    color: #ff6b6b;
+}
+
+footer > ul li:not(:last-child) a::after {
+    content: "•";
+    margin-left: 5px;
+    color: #ff6b6b;
+}
+
+

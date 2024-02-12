@@ -2,13 +2,32 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <script src="https://unpkg.com/htmx.org@1.9.10"></script>
     <title>IMGHOST - UPLOAD </title>
+    <link type="text/css" rel="stylesheet" href="/static/index.css">
 </head>
 <body>
-    JARABIE KURWA
+<main>
+    <main>
+
+    <h1 class="logo"><span>Img</span>Host</h1>
+
+    <form action="/api/upload" method="post" enctype="multipart/form-data" hx-post hx-target="#upload-form">
+        <label for="file-upload" class="login-btn">Choose File</label>
+        <input id="file-upload" type="file" style="display: none;">
+    </form>
+    </main>
+
+    <footer>
+        <ul>
+            <li><a href="/upload">Upload</a></li>
+            <li><a href="/images">Images</a></li>
+            <li><a href="/images">Source</a></li>
+            <li><a href="/logout">Logout</a></li>
+        </ul>
+    </footer>
+</main>
 </body>
 </html>

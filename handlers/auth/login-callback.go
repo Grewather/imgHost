@@ -73,19 +73,11 @@ func LoginCallback(w http.ResponseWriter, r *http.Request) {
 			w.Write([]byte("Error getting user info"))
 			return
 		}
-		response := struct {
-			TokenResponse
-			UserInfo utils.UserInfo `json:"userInfo"`
-		}{
-			TokenResponse: tokenResponse,
-			UserInfo:      userInfo,
-		}
+
 		db.AddToDb(userInfo.ID, userInfo.Username)
 		// TODO: make some better handling (if cookies wont save, then redirect to login page for example)
 		SetCookie(w, tokenResponse.AccessToken)
-		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(http.StatusOK)
-		json.NewEncoder(w).Encode(response)
+		http.Redirect(w, r, "/upload", http.StatusMovedPermanently)
 	} else {
 		w.WriteHeader(http.StatusBadRequest)
 		w.Write([]byte("No code provided"))
