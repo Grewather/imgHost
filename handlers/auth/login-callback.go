@@ -76,7 +76,8 @@ func LoginCallback(w http.ResponseWriter, r *http.Request) {
 
 		db.AddToDb(userInfo.ID, userInfo.Username)
 		// TODO: make some better handling (if cookies wont save, then redirect to login page for example)
-		SetCookie(w, tokenResponse.AccessToken)
+
+		SetCookie(w, tokenResponse.AccessToken, tokenResponse.ExpiresIn)
 		http.Redirect(w, r, "/upload", http.StatusMovedPermanently)
 	} else {
 		w.WriteHeader(http.StatusBadRequest)
