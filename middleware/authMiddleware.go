@@ -1,6 +1,7 @@
 package middleware
 
 import (
+	"imgHost/handlers/auth"
 	"imgHost/utils"
 	"net/http"
 	"strings"
@@ -20,11 +21,12 @@ func AuthMiddleware(next http.Handler) http.Handler {
 			}
 		} else {
 			userInfo, err := utils.GetUserInfo(cookie.Value)
-			if err != nil || userInfo.ID == "" {
+			if err != nil || len(userInfo.ID) == 0 {
+				auth.SetCookie(w, "", -1)
 				http.Redirect(w, r, "/", http.StatusMovedPermanently)
 				return
 			}
-			if r.URL.Path != "/upload" {
+			if !strings.HasPrefix(r.URL.Path, "/upload") && !strings.HasPrefix(r.URL.Path, "/images") && !strings.HasPrefix(r.URL.Path, "/signup") {
 				http.Redirect(w, r, "/upload", http.StatusMovedPermanently)
 				return
 			} else {
