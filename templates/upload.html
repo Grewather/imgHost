@@ -14,7 +14,7 @@
 
     <h1 class="logo"><span>Img</span>Host</h1>
 
-    <form action="/api/upload" method="post" enctype="multipart/form-data" hx-post hx-target="#upload-form">
+    <form action="/api/upload" method="post" enctype="multipart/form-data">
         <label for="file-upload" class="login-btn">Choose File</label>
         <input id="file-upload" type="file" style="display: none;">
     </form>
@@ -23,9 +23,9 @@
     <footer>
         <ul>
             <li><a href="/upload">Upload</a></li>
-            <li><a href="/images">Images</a></li>
-            <li><a href="/images">Source</a></li>
-            <li><a href="/logout">Logout</a></li>
+            <li><a href="/gallery">Gallery</a></li>
+            <li><a href="https://github.com/Grewather">Source</a></li>
+            <li><a href="/api/auth/discord/logout" >Logout</a></li>
         </ul>
     </footer>
 </main>

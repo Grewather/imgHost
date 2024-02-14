@@ -9,7 +9,7 @@ import (
 
 func AuthMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if strings.HasPrefix(r.URL.Path, "/static") || strings.HasPrefix(r.URL.Path, "/api/") {
+		if strings.HasPrefix(r.URL.Path, "/static") || strings.HasPrefix(r.URL.Path, "/api") {
 			next.ServeHTTP(w, r)
 			return
 		}
@@ -26,7 +26,7 @@ func AuthMiddleware(next http.Handler) http.Handler {
 				http.Redirect(w, r, "/", http.StatusMovedPermanently)
 				return
 			}
-			if !strings.HasPrefix(r.URL.Path, "/upload") && !strings.HasPrefix(r.URL.Path, "/images") && !strings.HasPrefix(r.URL.Path, "/signup") {
+			if !strings.HasPrefix(r.URL.Path, "/upload") && !strings.HasPrefix(r.URL.Path, "/images") {
 				http.Redirect(w, r, "/upload", http.StatusMovedPermanently)
 				return
 			} else {

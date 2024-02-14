@@ -1,6 +1,8 @@
 package auth
 
-import "net/http"
+import (
+	"net/http"
+)
 
 func SetCookie(w http.ResponseWriter, token string, expiresIn int) {
 	cookie := http.Cookie{
