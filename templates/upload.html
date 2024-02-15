@@ -14,9 +14,17 @@
 
     <h1 class="logo"><span>Img</span>Host</h1>
 
-    <form action="/api/upload" method="post" enctype="multipart/form-data">
-        <label for="file-upload" class="login-btn">Choose File</label>
-        <input id="file-upload" type="file" style="display: none;">
+    <form action="/api/upload" method="post" enctype="multipart/form-data" target="_blank">
+        <div class="formWrapper">
+            <label for="file-upload" class="login-btn">
+                Choose File
+            </label>
+            <button class="login-btn" type="submit"><div class="arrow-right"></div></button>
+            <input id="file-upload" type="file" style="display: none" name="file">
+
+
+        </div>
+
     </form>
     </main>
 
@@ -28,6 +36,10 @@
             <li><a href="/api/auth/discord/logout" >Logout</a></li>
         </ul>
     </footer>
+
 </main>
+<script>
+
+</script>
 </body>
 </html>

@@ -6,6 +6,7 @@ import (
 	"github.com/rs/cors"
 	"html/template"
 	"imgHost/handlers/auth"
+	"imgHost/handlers/images"
 	authMiddleware "imgHost/middleware"
 	"net/http"
 )
@@ -43,9 +44,7 @@ func Router() http.Handler {
 		r.Get("/", func(w http.ResponseWriter, r *http.Request) {
 			w.Write([]byte("API endpoint"))
 		})
-		r.Get("/dupa", func(w http.ResponseWriter, r *http.Request) {
-			w.Write([]byte("API endpoint"))
-		})
+		r.Post("/upload", images.Upload)
 		r.Get("/auth/discord/logout", auth.Logout)
 		r.Get("/auth/discord/login", auth.LoginAuth)
 		r.Get("/auth/discord/callback", auth.LoginCallback)

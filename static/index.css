@@ -22,6 +22,17 @@ main{
 .logo > span{
     color: #ff6b6b;
 }
+.formWrapper{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    border-radius: 5px;
+}
+.formWrapper > button{
+    margin-left:5px;
+}
+
 .login-btn
 {
     margin-top: 20px;
@@ -43,6 +54,15 @@ footer{
     color: white;
     text-align:center;
     padding:10px;
+}
+
+.arrow-right {
+    width: 0;
+    height: 0;
+    border-top: 10px solid transparent;
+    border-bottom: 10px solid transparent;
+    border-left: 10px solid white;
+
 }
 
 footer > ul {
@@ -71,3 +91,9 @@ footer > ul li:not(:last-child) a::after {
 }
 
 
+.uploadForm{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+}
