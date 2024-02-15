@@ -1,10 +1,13 @@
 package images
 
 import (
+	"fmt"
+	"imgHost/db"
 	"imgHost/utils"
 	"io"
 	"net/http"
 	"os"
+	"path/filepath"
 )
 
 func Upload(w http.ResponseWriter, r *http.Request) {
@@ -24,13 +27,23 @@ func Upload(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	file, fileHeader, err := r.FormFile("file")
+	file, header, err := r.FormFile("file")
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
+	extension := filepath.Ext(header.Filename)
+	randString := utils.GetRandomString()
+	fmt.Println("3")
+
+	for {
+		if checkIfYouCanAdd(randString, userinfo.ID, extension) {
+			break
+		}
+		randString = utils.GetRandomString()
+	}
 	defer file.Close()
-	outFile, err := os.Create("images/" + userinfo.ID + "/" + fileHeader.Filename)
+	outFile, err := os.Create("images/" + userinfo.ID + "/" + randString + extension)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -41,5 +54,21 @@ func Upload(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
+	fmt.Println("1")
+	db.AddImgToDb(randString, userinfo.ID)
+	fmt.Println("2")
 	w.Write([]byte("File uploaded successfully"))
+}
+
+func checkIfYouCanAdd(randString, discordid, extension string) bool {
+	pathfile := "images/" + discordid + "/" + randString
+
+	if _, err := os.Stat(pathfile); err == nil {
+		return false
+	} else if os.IsNotExist(err) {
+		return true
+	} else {
+		// better handling of error
+		return false
+	}
 }

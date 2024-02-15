@@ -7,3 +7,10 @@ type Account struct {
 	DiscordId string             `bson:"discord_id"`
 	Username  string             `bson:"username"`
 }
+
+type ImageScheme struct {
+	ID      primitive.ObjectID `bson:"_id,omitempty"`
+	Owner   string             `bson:"owner"`
+	ImgName string             `bson:"img_name"`
+	Url     string             `bson:"url"`
+}
