@@ -21,8 +21,8 @@ func Upload(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Unauthorized", http.StatusUnauthorized)
 		return
 	}
-	if _, err := os.Stat("images/" + userinfo.ID); os.IsNotExist(err) {
-		os.MkdirAll("images/"+userinfo.ID, 0755)
+	if _, err := os.Stat("uploads/" + userinfo.ID); os.IsNotExist(err) {
+		os.MkdirAll("uploads/"+userinfo.ID, 0755)
 	} else if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -43,7 +43,7 @@ func Upload(w http.ResponseWriter, r *http.Request) {
 		randString = utils.GetRandomString()
 	}
 	defer file.Close()
-	outFile, err := os.Create("images/" + userinfo.ID + "/" + randString + extension)
+	outFile, err := os.Create("uploads/" + userinfo.ID + "/" + randString + extension)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -55,13 +55,13 @@ func Upload(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	fmt.Println("1")
-	db.AddImgToDb(randString, userinfo.ID)
+	url := db.AddImgToDb(randString, userinfo.ID, extension)
 	fmt.Println("2")
-	w.Write([]byte("File uploaded successfully"))
+	http.Redirect(w, r, "/i/"+url, http.StatusFound)
 }
 
 func checkIfYouCanAdd(randString, discordid, extension string) bool {
-	pathfile := "images/" + discordid + "/" + randString
+	pathfile := "uploads/" + discordid + "/" + randString
 
 	if _, err := os.Stat(pathfile); err == nil {
 		return false

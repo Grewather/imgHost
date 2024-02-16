@@ -35,6 +35,9 @@ func Router() http.Handler {
 			tmpl.Execute(w, nil)
 		})
 	})
+	r.Route("/i", func(r chi.Router) {
+		r.Get("/{id}", images.GetImage)
+	})
 
 	r.Route("/api", func(r chi.Router) {
 		r.Options("/*", func(w http.ResponseWriter, r *http.Request) {

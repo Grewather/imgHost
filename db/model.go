@@ -9,8 +9,9 @@ type Account struct {
 }
 
 type ImageScheme struct {
-	ID      primitive.ObjectID `bson:"_id,omitempty"`
-	Owner   string             `bson:"owner"`
-	ImgName string             `bson:"img_name"`
-	Url     string             `bson:"url"`
+	ID        primitive.ObjectID `bson:"_id,omitempty"`
+	Owner     string             `bson:"owner"`
+	ImgName   string             `bson:"img_name"`
+	Url       string             `bson:"url"`
+	Extension string             `bson:"extension"`
 }

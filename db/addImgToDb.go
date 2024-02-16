@@ -8,7 +8,7 @@ import (
 	"imgHost/utils"
 )
 
-func AddImgToDb(imgName, owner string) {
+func AddImgToDb(imgName, owner, extension string) string {
 
 	randString := utils.GetRandomString()
 	for {
@@ -23,12 +23,13 @@ func AddImgToDb(imgName, owner string) {
 		{"owner", owner},
 		{"img_name", imgName},
 		{"url", randString},
+		{"extension", extension},
 	})
 	if err != nil {
 		panic(err)
 	}
 
-	return
+	return randString
 
 }
 
