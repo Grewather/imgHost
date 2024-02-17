@@ -8,16 +8,13 @@ import (
 )
 
 func main() {
-	//r := chi.Router()
 	db.ConnectToDb()
 	defer db.Client.Disconnect(context.TODO())
 	r := route.Router()
 
-	http.ListenAndServe(":3000", r)
+	err := http.ListenAndServe(":3000", r)
+	if err != nil {
+		panic(err)
+	}
 
-	//var r *chi.Mux = chi.Router()
-	//r.Get("/", func(w http.ResponseWriter, r *http.Request) {
-	//	w.Write([]byte("Hello, world!"))
-	//
-	//})
 }

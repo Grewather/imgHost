@@ -14,18 +14,19 @@ import (
 var Client *mongo.Client
 
 func ConnectToDb() {
-	godotenv.Load(".env")
+	err := godotenv.Load(".env")
+	if err != nil {
+		panic(err)
+	}
 
 	serverApi := options.ServerAPI(options.ServerAPIVersion1)
 	opts := options.Client().ApplyURI(os.Getenv("MONGO_URL")).SetServerAPIOptions(serverApi)
 
 	client, err := mongo.Connect(context.TODO(), opts)
 	if err != nil {
-
 		log.Fatal(err)
 	}
 	if err := client.Database("admin").RunCommand(context.TODO(), bson.D{{"ping", 1}}).Err(); err != nil {
-
 		log.Fatal(err)
 	}
 	fmt.Println("Connected to MongoDB!")

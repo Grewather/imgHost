@@ -28,12 +28,26 @@ func Router() http.Handler {
 	r.Route("/", func(r chi.Router) {
 		r.Get("/", func(w http.ResponseWriter, r *http.Request) {
 			tmpl := template.Must(template.ParseFiles("./templates/index.html"))
-			tmpl.Execute(w, nil)
+			err := tmpl.Execute(w, nil)
+			if err != nil {
+				panic(err)
+			}
 		})
 		r.Get("/upload", func(w http.ResponseWriter, r *http.Request) {
 			tmpl := template.Must(template.ParseFiles("./templates/upload.html"))
-			tmpl.Execute(w, nil)
+			err := tmpl.Execute(w, nil)
+			if err != nil {
+				panic(err)
+			}
 		})
+		r.Get("/gallery", func(w http.ResponseWriter, r *http.Request) {
+			tmpl := template.Must(template.ParseFiles("./templates/gallery.html"))
+			err := tmpl.Execute(w, nil)
+			if err != nil {
+				panic(err)
+			}
+		})
+
 	})
 	r.Route("/i", func(r chi.Router) {
 		r.Get("/{id}", images.GetImage)
@@ -47,6 +61,7 @@ func Router() http.Handler {
 		r.Get("/", func(w http.ResponseWriter, r *http.Request) {
 			w.Write([]byte("API endpoint"))
 		})
+		r.Get("/images", images.ImgToLoad)
 		r.Post("/upload", images.Upload)
 		r.Get("/auth/discord/logout", auth.Logout)
 		r.Get("/auth/discord/login", auth.LoginAuth)

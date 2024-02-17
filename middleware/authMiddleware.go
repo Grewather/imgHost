@@ -16,17 +16,17 @@ func AuthMiddleware(next http.Handler) http.Handler {
 		cookie, err := r.Cookie("token")
 		if err != nil {
 			if r.URL.Path != "/" {
-				http.Redirect(w, r, "/", http.StatusFound)
+				http.Redirect(w, r, "/", http.StatusSeeOther)
 				return
 			}
 		} else {
 			userInfo, err := utils.GetUserInfo(cookie.Value)
 			if err != nil || len(userInfo.ID) == 0 {
 				auth.SetCookie(w, "", -1)
-				http.Redirect(w, r, "/", http.StatusFound)
+				http.Redirect(w, r, "/", http.StatusSeeOther)
 				return
 			}
-			if !strings.HasPrefix(r.URL.Path, "/upload") && !strings.HasPrefix(r.URL.Path, "/images") {
+			if !strings.HasPrefix(r.URL.Path, "/upload") && !strings.HasPrefix(r.URL.Path, "/gallery") {
 				http.Redirect(w, r, "/upload", http.StatusFound)
 				return
 			} else {

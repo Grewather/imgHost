@@ -68,7 +68,6 @@ func checkIfYouCanAdd(randString, discordid, extension string) bool {
 	} else if os.IsNotExist(err) {
 		return true
 	} else {
-		// better handling of error
 		return false
 	}
 }
