@@ -2,28 +2,53 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <link type="text/css" rel="stylesheet"  href="/static/index.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&family=Roboto&display=swap" rel="stylesheet">
-    <title>ImgHost</title>
+    <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+    <title>IMGHOST - UPLOAD</title>
+    <link type="text/css" rel="stylesheet" href="/static/index.css">
+    <style>
+
+    </style>
 </head>
 <body>
-<main>
+<header>
     <h1 class="logo"><span>Img</span>Host</h1>
-    galery here
-    <footer>
-        <ul>
-            <li><a href="/upload">Upload</a></li>
-            <li><a href="/gallery">Gallery</a></li>
-            <li><a href="https://github.com/Grewather">Source</a></li>
-            <li><a href="/api/discord/auth/logout">Logout</a></li>
-        </ul>
-    </footer>
-</main>
+</header>
+<main>
+    <ul class="gallery">
+    </ul>
 
+</main>
+<footer>
+    <ul>
+        <li><a href="/upload">Upload</a></li>
+        <li><a href="/gallery">Gallery</a></li>
+        <li><a href="https://github.com/Grewather">Source</a></li>
+        <li><a href="/api/auth/discord/logout">Logout</a></li>
+    </ul>
+</footer>
+<script>
+    fetch('/api/images')
+        .then(response => response.json())
+        .then(data => {
+            const gallery = document.querySelector('.gallery');
+            data.forEach(image => {
+                const thumbnail = document.createElement('div');
+                thumbnail.classList.add('thumbnail');
+                thumbnail.innerHTML = `
+                <a href="/i/${image}" target="_blank">
+                    <img src="/i/${image}" alt="Avatar" class="image" style="width:100%">
+                </a>
+                <div class="middle">
+                    <button class="login-btn" onclick="deleteImage('${image}')">delete</button>
+                </div>
+                `;
+                gallery.appendChild(thumbnail);
+            });
+
+        });
+
+</script>
 </body>
 </html>
