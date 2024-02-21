@@ -15,7 +15,7 @@ func ImgToLoad(w http.ResponseWriter, r *http.Request) {
 		fmt.Println("Error:", err)
 		return
 	}
-	imagesFirstPage, err := db.GetImagesToLoad(userInfo.ID, 10, 1)
+	imagesFirstPage, err := db.GetImagesToLoad(userInfo.ID)
 	if err != nil {
 		fmt.Println("Error:", err)
 		return

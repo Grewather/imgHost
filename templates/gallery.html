@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <script src="https://unpkg.com/htmx.org@1.9.10"></script>
     <title>IMGHOST - UPLOAD</title>
     <link type="text/css" rel="stylesheet" href="/static/index.css">
     <style>
@@ -32,6 +31,25 @@
     </ul>
 </footer>
 <script>
+    function deleteImage(imageId) {
+        fetch(`/api/delete/${imageId}`, {
+            method: 'DELETE',
+        })
+            .then(response => {
+                if (response.ok) {
+                    const thumbnailToRemove = document.querySelector(`.thumbnail img[src="/i/${imageId}"]`).parentNode.parentNode;
+                    console.log(thumbnailToRemove);
+                    thumbnailToRemove.parentNode.removeChild(thumbnailToRemove);
+
+                } else {
+                    console.error('Something went wrong while downloading image.');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+    }
+
     fetch('/api/images')
         .then(response => response.json())
         .then(data => {
@@ -41,7 +59,7 @@
                 const thumbnail = document.createElement('div');
                 thumbnail.classList.add('thumbnail');
                 thumbnail.innerHTML = `
-                <a href="/i/${image}" target="_blank"> <!-- Dodaj <a> element z href -->
+                <a href="/i/${image}" target="_blank">
                     <img src="/i/${image}" alt="Avatar" class="image" style="width:100%">
                 </a>
                 <div class="middle">

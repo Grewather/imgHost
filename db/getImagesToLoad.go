@@ -4,14 +4,12 @@ import (
 	"context"
 	"fmt"
 	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-func GetImagesToLoad(id string, pageSize, pageNum int) ([]ImageScheme, error) {
+func GetImagesToLoad(id string) ([]ImageScheme, error) {
 	connection := Client.Database("imgHost").Collection("images")
 	filter := bson.M{"owner": id}
-	opt := options.Find().SetLimit(int64(pageSize)).SetSkip(int64((pageNum - 1) * pageSize))
-	cur, err := connection.Find(context.TODO(), filter, opt)
+	cur, err := connection.Find(context.TODO(), filter)
 	if err != nil {
 		return nil, err
 	}

@@ -54,15 +54,13 @@ func Router() http.Handler {
 	})
 
 	r.Route("/api", func(r chi.Router) {
-		r.Options("/*", func(w http.ResponseWriter, r *http.Request) {
-			w.WriteHeader(http.StatusOK)
-		})
 
 		r.Get("/", func(w http.ResponseWriter, r *http.Request) {
 			w.Write([]byte("API endpoint"))
 		})
 		r.Get("/images", images.ImgToLoad)
 		r.Post("/upload", images.Upload)
+		r.Delete("/delete/{id}", images.DeleteImg)
 		r.Get("/auth/discord/logout", auth.Logout)
 		r.Get("/auth/discord/login", auth.LoginAuth)
 		r.Get("/auth/discord/callback", auth.LoginCallback)
