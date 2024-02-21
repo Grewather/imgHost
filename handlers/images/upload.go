@@ -1,7 +1,6 @@
 package images
 
 import (
-	"fmt"
 	"imgHost/db"
 	"imgHost/utils"
 	"io"
@@ -34,8 +33,11 @@ func Upload(w http.ResponseWriter, r *http.Request) {
 	}
 	extension := filepath.Ext(header.Filename)
 	randString := utils.GetRandomString()
-	fmt.Println("3")
-
+	ext := utils.CheckFileExt(extension)
+	if !ext {
+		http.Error(w, "Invalid file extension", http.StatusBadRequest)
+		return
+	}
 	for {
 		if checkIfYouCanAdd(randString, userinfo.ID, extension) {
 			break
@@ -54,9 +56,7 @@ func Upload(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	fmt.Println("1")
 	url := db.AddImgToDb(randString, userinfo.ID, extension)
-	fmt.Println("2")
 	http.Redirect(w, r, "/i/"+url, http.StatusFound)
 }
 
