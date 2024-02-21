@@ -17,6 +17,9 @@
 </header>
 <main>
     <ul class="gallery">
+
+
+
     </ul>
 
 </main>
@@ -34,16 +37,17 @@
         .then(data => {
             const gallery = document.querySelector('.gallery');
             data.forEach(image => {
+                console.log('Image URL:', image);
                 const thumbnail = document.createElement('div');
                 thumbnail.classList.add('thumbnail');
                 thumbnail.innerHTML = `
-                <a href="/i/${image}" target="_blank">
+                <a href="/i/${image}" target="_blank"> <!-- Dodaj <a> element z href -->
                     <img src="/i/${image}" alt="Avatar" class="image" style="width:100%">
                 </a>
                 <div class="middle">
                     <button class="login-btn" onclick="deleteImage('${image}')">delete</button>
                 </div>
-                `;
+                  `;
                 gallery.appendChild(thumbnail);
             });
 
