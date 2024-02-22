@@ -6,6 +6,7 @@ import (
 	"imgHost/db"
 	"imgHost/utils"
 	"net/http"
+	"os"
 )
 
 type DeleteResponse struct {
@@ -24,7 +25,7 @@ func DeleteImg(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "User not found", http.StatusNotFound)
 		return
 	}
-	result := db.DelDbFromDb(userinfo.ID, imgId)
+	imgToDelete, ext, result := db.DelFromDb(imgId)
 	if !result {
 		http.Error(w, "Image not found or user not authorized", http.StatusNotFound)
 		return
@@ -37,6 +38,12 @@ func DeleteImg(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
+	err = os.Remove("uploads/" + userinfo.ID + "/" + imgToDelete + ext)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	w.Write(jsonResponse)
