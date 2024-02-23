@@ -36,6 +36,16 @@ main{
     background-color: #2f2e2e;
     flex-direction: column;
 }
+main > h1{
+    color: white;
+    font-family: 'Poppins', sans-serif;
+    margin-bottom: 20px;
+}
+form > input[type="text"]{
+    color: black;
+    padding:10px;
+    font-family: 'Poppins', sans-serif;
+}
 .gallery {
     display: flex;
     flex-wrap: wrap;
@@ -43,6 +53,20 @@ main{
     list-style:none;
     max-width: 100%;
     padding:64px;
+    font-family: 'Poppins', sans-serif;
+    color:white;
+}
+
+.error{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: #b7b4b4;
+    font-weight: bold;
+}
+.error > p{
+    padding: 20px;
 }
 
 .thumbnail {
@@ -105,7 +129,7 @@ main{
     margin-bottom: 20px;
 }
 
-.logo > span {
+h1 > span {
     color: #ff6b6b;
 }
 .login-btn

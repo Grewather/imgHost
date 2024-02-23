@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>IMGHOST - UPLOAD</title>
+    <title>ImgHost - Gallery</title>
     <link type="text/css" rel="stylesheet" href="/static/index.css">
     <style>
 
@@ -40,6 +40,14 @@
                     const thumbnailToRemove = document.querySelector(`.thumbnail img[src="/i/${imageId}"]`).parentNode.parentNode;
                     console.log(thumbnailToRemove);
                     thumbnailToRemove.parentNode.removeChild(thumbnailToRemove);
+                    const gallery = document.querySelector('.gallery');
+                    if (gallery.children.length === 0) {
+                        gallery.innerHTML = `
+                        <div class="error">
+                            <img src="../static/NoGallery.gif" alt="No Gallery"  style="width:100%" />
+                            <p>You doesnt have any uploaded photos</p>
+                        </div>`;
+                    }
 
                 } else {
                     console.error('Something went wrong while downloading image.');
@@ -51,25 +59,58 @@
     }
 
     fetch('/api/images')
-        .then(response => response.json())
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.text();
+        })
         .then(data => {
-            const gallery = document.querySelector('.gallery');
-            data.forEach(image => {
-                console.log('Image URL:', image);
-                const thumbnail = document.createElement('div');
-                thumbnail.classList.add('thumbnail');
-                thumbnail.innerHTML = `
-                <a href="/i/${image}" target="_blank">
-                    <img src="/i/${image}" alt="Avatar" class="image" style="width:100%">
-                </a>
-                <div class="middle">
-                    <button class="login-btn" onclick="deleteImage('${image}')">delete</button>
+            if (data.trim() === '') {
+                const gallery = document.querySelector('.gallery');
+                // Show gif from ./static/NoGallery.gif
+                gallery.innerHTML = `
+                <div class="error">
+                    <img src="../static/NoGallery.gif" alt="No Gallery"  style="width:100%" />
+                    <p>You doesnt have any uploaded photos</p>
                 </div>
-                  `;
-                gallery.appendChild(thumbnail);
-            });
+            `;
 
+            } else {
+                try {
+                    const jsonData = JSON.parse(data);
+                    const gallery = document.querySelector('.gallery');
+                    if (jsonData.length === 0) {
+                        gallery.innerHTML = `
+                        <div class="error">
+                            <img src="../static/NoGallery.gif" alt="No Gallery"  style="width:100%" />
+                            <p>You doesnt have any uploaded photos</p>
+                        </div>`;
+                    } else {
+                        jsonData.forEach(image => {
+                            console.log('Image URL:', image);
+                            const thumbnail = document.createElement('div');
+                            thumbnail.classList.add('thumbnail');
+                            thumbnail.innerHTML = `
+                        <a href="/i/${image}" target="_blank">
+                            <img src="/i/${image}" alt="Avatar" class="image" style="width:100%">
+                        </a>
+                        <div class="middle">
+                            <button class="login-btn" onclick="deleteImage('${image}')">delete</button>
+                        </div>
+                        `;
+                            gallery.appendChild(thumbnail);
+                        });
+                    }
+                } catch (error) {
+                    console.error('Error parsing JSON:', error);
+                }
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
         });
+
 
 </script>
 </body>

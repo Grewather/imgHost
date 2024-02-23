@@ -5,6 +5,7 @@ import (
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/rs/cors"
 	"html/template"
+	"imgHost/handlers/admin"
 	"imgHost/handlers/auth"
 	"imgHost/handlers/images"
 	authMiddleware "imgHost/middleware"
@@ -52,7 +53,9 @@ func Router() http.Handler {
 	r.Route("/i", func(r chi.Router) {
 		r.Get("/{id}", images.GetImage)
 	})
-
+	r.Route("/admin", func(r chi.Router) {
+		r.Get("/", admin.AdminPage)
+	})
 	r.Route("/api", func(r chi.Router) {
 
 		r.Get("/", func(w http.ResponseWriter, r *http.Request) {
