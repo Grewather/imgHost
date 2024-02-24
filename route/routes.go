@@ -53,14 +53,20 @@ func Router() http.Handler {
 	r.Route("/i", func(r chi.Router) {
 		r.Get("/{id}", images.GetImage)
 	})
-	r.Route("/admin", func(r chi.Router) {
-		r.Get("/", admin.AdminPage)
+	r.Get("/admin", func(w http.ResponseWriter, r *http.Request) {
+		tmpl := template.Must(template.ParseFiles("./templates/admin.html"))
+		err := tmpl.Execute(w, nil)
+		if err != nil {
+			panic(err)
+		}
 	})
 	r.Route("/api", func(r chi.Router) {
 
 		r.Get("/", func(w http.ResponseWriter, r *http.Request) {
 			w.Write([]byte("API endpoint"))
 		})
+		r.Post("/admin/addInvite", admin.AddInv)
+		r.Post("/admin/removeInvite", admin.RemoveInv)
 		r.Get("/images", images.ImgToLoad)
 		r.Post("/upload", images.Upload)
 		r.Delete("/delete/{id}", images.DeleteImg)

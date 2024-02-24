@@ -73,7 +73,12 @@ func LoginCallback(w http.ResponseWriter, r *http.Request) {
 			w.Write([]byte("Error getting user info"))
 			return
 		}
-
+		res := db.GetIdFromDb(userInfo.ID)
+		if !res {
+			w.WriteHeader(http.StatusUnauthorized)
+			w.Write([]byte("You are not invited"))
+			return
+		}
 		db.AddToDb(userInfo.ID, userInfo.Username)
 		// TODO: make some better handling (if cookies wont save, then redirect to login page for example)
 

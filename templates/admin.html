@@ -14,9 +14,11 @@
     </header>
     <main>
         <h1>Create <span>invite</span></h1>
-        <form>
-            <input type="text" id="invite" name="invite" placeholder="Enter id">
-            <button class="login-btn" type="submit" role="button" >Create</button>
+        <form action="/api/admin/addInvite" method="POST">
+            <input type="text" id="invite" name="invitedId" placeholder="Enter id">
+            <button class="login-btn" formaction="/api/admin/addInvite" type="submit" role="button" >Create</button>
+            <button class="login-btn" formaction="/api/admin/removeInvite" type="submit" role="button" >Remove</button>
+
         </form>
     </main>
     <footer>

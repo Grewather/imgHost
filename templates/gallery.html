@@ -68,7 +68,6 @@
         .then(data => {
             if (data.trim() === '') {
                 const gallery = document.querySelector('.gallery');
-                // Show gif from ./static/NoGallery.gif
                 gallery.innerHTML = `
                 <div class="error">
                     <img src="../static/NoGallery.gif" alt="No Gallery"  style="width:100%" />
