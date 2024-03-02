@@ -2,8 +2,10 @@ package auth
 
 import (
 	"encoding/json"
+	"fmt"
 	"github.com/joho/godotenv"
 	"imgHost/db"
+	"imgHost/models"
 	"imgHost/utils"
 	"io"
 	"net/http"
@@ -69,18 +71,22 @@ func LoginCallback(w http.ResponseWriter, r *http.Request) {
 
 		userInfo, err := utils.GetUserInfo(tokenResponse.AccessToken)
 		if err != nil {
+			fmt.Println(err)
 			w.WriteHeader(http.StatusInternalServerError)
 			w.Write([]byte("Error getting user info"))
 			return
 		}
-		res := db.GetIdFromDb(userInfo.ID)
+		res := db.GetIdFromDb(userInfo.DiscordId)
 		if !res {
 			w.WriteHeader(http.StatusUnauthorized)
 			w.Write([]byte("You are not invited"))
 			return
 		}
-		db.AddToDb(userInfo.ID, userInfo.Username)
-		// TODO: make some better handling (if cookies wont save, then redirect to login page for example)
+		account := models.Account{
+			DiscordId: userInfo.DiscordId,
+			Username:  userInfo.Username,
+		}
+		db.AddToDb(account)
 
 		SetCookie(w, tokenResponse.AccessToken, tokenResponse.ExpiresIn)
 		http.Redirect(w, r, "/upload", http.StatusMovedPermanently)

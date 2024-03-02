@@ -5,13 +5,14 @@ import (
 	"errors"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
+	"imgHost/models"
 )
 
 func DelFromDb(id string) (string, string, bool) {
 	collection := Client.Database("imgHost").Collection("images")
 	filter := bson.M{"url": id}
 
-	var image ImageScheme
+	var image models.ImageScheme
 	err := collection.FindOne(context.TODO(), filter).Decode(&image)
 	if err != nil {
 		if errors.Is(err, mongo.ErrNoDocuments) {

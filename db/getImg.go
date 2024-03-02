@@ -6,12 +6,13 @@ import (
 	"fmt"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
+	"imgHost/models"
 )
 
 func GetImg(id string) (string, string, error) {
 	collection := Client.Database("imgHost").Collection("images")
 	filter := bson.M{"url": id}
-	var imageUrl ImageScheme
+	var imageUrl models.ImageScheme
 	err := collection.FindOne(context.TODO(), filter).Decode(&imageUrl)
 	if err != nil {
 		if errors.Is(err, mongo.ErrNoDocuments) {

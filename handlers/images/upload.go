@@ -1,73 +1,107 @@
 package images
 
 import (
+	"fmt"
+	"github.com/joho/godotenv"
 	"imgHost/db"
 	"imgHost/utils"
-	"io"
 	"net/http"
 	"os"
 	"path/filepath"
 )
 
+type PostData struct {
+	Secret string `json:"secret"`
+	Source string `json:"source"`
+}
+
 func Upload(w http.ResponseWriter, r *http.Request) {
-	accessToken, err := r.Cookie("token")
-	if err != nil {
-		http.Error(w, "Unauthorized", http.StatusUnauthorized)
-		return
-	}
-	userinfo, err := utils.GetUserInfo(accessToken.Value)
-	if err != nil {
-		http.Error(w, "Unauthorized", http.StatusUnauthorized)
-		return
-	}
-	if _, err := os.Stat("uploads/" + userinfo.ID); os.IsNotExist(err) {
-		os.MkdirAll("uploads/"+userinfo.ID, 0755)
-	} else if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-	file, header, err := r.FormFile("file")
+	godotenv.Load(".env")
+	err := r.ParseMultipartForm(10 << 20)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
-	extension := filepath.Ext(header.Filename)
-	randString := utils.GetRandomString()
-	ext := utils.CheckFileExt(extension)
-	if !ext {
-		http.Error(w, "Invalid file extension", http.StatusBadRequest)
+
+	secret := r.FormValue("secret")
+	source := r.FormValue("source")
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
-	for {
-		if checkIfYouCanAdd(randString, userinfo.ID, extension) {
-			break
+	if source == "sharex" {
+		userInfo, err := db.GetApiKey(secret)
+		if err != nil {
+			http.Error(w, "Unauthorized", http.StatusUnauthorized)
+			return
 		}
-		randString = utils.GetRandomString()
-	}
-	defer file.Close()
-	outFile, err := os.Create("uploads/" + userinfo.ID + "/" + randString + extension)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-	defer outFile.Close()
-	_, err = io.Copy(outFile, file)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-	url := db.AddImgToDb(randString, userinfo.ID, extension)
-	http.Redirect(w, r, "/i/"+url, http.StatusFound)
-}
+		fmt.Println(userInfo.ID)
+		file, header, err := r.FormFile("file")
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			return
+		}
+		defer file.Close()
+		fmt.Println("daa")
 
-func checkIfYouCanAdd(randString, discordid, extension string) bool {
-	pathfile := "uploads/" + discordid + "/" + randString
+		extension := filepath.Ext(header.Filename)
+		randString := utils.GetRandomString()
+		ext := utils.CheckFileExt(extension)
+		if !ext {
+			http.Error(w, "Invalid file extension", http.StatusBadRequest)
+			return
+		}
 
-	if _, err := os.Stat(pathfile); err == nil {
-		return false
-	} else if os.IsNotExist(err) {
-		return true
+		err = utils.SaveFileToUploads(file, userInfo, extension, randString)
+		if err != nil {
+			if err.Error() == "invalid file extension" {
+				http.Error(w, err.Error(), http.StatusBadRequest)
+				return
+			}
+			fmt.Println(err.Error())
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+
+		url := db.AddImgToDb(randString, userInfo.DiscordId, extension)
+		w.WriteHeader(http.StatusOK)
+		w.Write([]byte(os.Getenv("DOMAIN") + "/i/" + url))
+
+	} else if source == "web" {
+		accessToken, err := r.Cookie("token")
+		if err != nil {
+			http.Error(w, "Unauthorized", http.StatusUnauthorized)
+			return
+		}
+		userinfo, err := utils.GetUserInfo(accessToken.Value)
+		if err != nil {
+			http.Error(w, "Unauthorized", http.StatusUnauthorized)
+			return
+		}
+
+		file, header, err := r.FormFile("file")
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			return
+		}
+		extension := filepath.Ext(header.Filename)
+		fmt.Println(extension)
+		randString := utils.GetRandomString()
+		err = utils.SaveFileToUploads(file, userinfo, extension, randString)
+		if err != nil {
+			if err.Error() == "invalid file extension" {
+				http.Error(w, err.Error(), http.StatusBadRequest)
+				return
+			}
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+
+		url := db.AddImgToDb(randString, userinfo.DiscordId, extension)
+		http.Redirect(w, r, "/i/"+url, http.StatusFound)
 	} else {
-		return false
+		http.Error(w, "Invalid source", http.StatusBadRequest)
+		return
 	}
+
 }

@@ -20,7 +20,7 @@ func AuthMiddleware(next http.Handler) http.Handler {
 				return
 			}
 			userinfo, err := utils.GetUserInfo(authToken.Value)
-			if err != nil || userinfo.ID != os.Getenv("ADMIN_ID") {
+			if err != nil || userinfo.DiscordId != os.Getenv("ADMIN_ID") {
 				http.Error(w, "Unauthorized", http.StatusUnauthorized)
 				return
 			}
@@ -39,12 +39,12 @@ func AuthMiddleware(next http.Handler) http.Handler {
 			}
 		} else {
 			userInfo, err := utils.GetUserInfo(cookie.Value)
-			if err != nil || len(userInfo.ID) == 0 {
+			if err != nil || len(userInfo.DiscordId) == 0 {
 				auth.SetCookie(w, "", -1)
 				http.Redirect(w, r, "/", http.StatusSeeOther)
 				return
 			}
-			res := db.GetIdFromDb(userInfo.ID)
+			res := db.GetIdFromDb(userInfo.DiscordId)
 			if !res {
 
 				auth.SetCookie(w, "", -1)

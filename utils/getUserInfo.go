@@ -2,18 +2,17 @@ package utils
 
 import (
 	"encoding/json"
+	"fmt"
+	"imgHost/models"
 	"net/http"
 )
 
-type UserInfo struct {
-	ID       string `bson:"id"`
-	Username string `bson:"username"`
-}
-
-func GetUserInfo(accessToken string) (UserInfo, error) {
+func GetUserInfo(accessToken string) (models.Account, error) {
 	req, err := http.NewRequest("GET", "https://discord.com/api/v10/users/@me", nil)
 	if err != nil {
-		return UserInfo{}, err
+		fmt.Println(err)
+		return models.Account{}, err
+
 	}
 
 	req.Header.Set("Authorization", "Bearer "+accessToken)
@@ -21,14 +20,16 @@ func GetUserInfo(accessToken string) (UserInfo, error) {
 	client := &http.Client{}
 	resp, err := client.Do(req)
 	if err != nil {
-		return UserInfo{}, err
+		fmt.Println(err, "d")
+		return models.Account{}, err
 	}
 	defer resp.Body.Close()
 
-	var userInfo UserInfo
+	var userInfo models.Account
 	err = json.NewDecoder(resp.Body).Decode(&userInfo)
 	if err != nil {
-		return UserInfo{}, err
+		fmt.Println(err, "e")
+		return models.Account{}, err
 	}
 
 	return userInfo, err

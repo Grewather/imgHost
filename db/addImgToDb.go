@@ -5,6 +5,7 @@ import (
 	"errors"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
+	"imgHost/models"
 	"imgHost/utils"
 )
 
@@ -36,7 +37,7 @@ func AddImgToDb(imgName, owner, extension string) string {
 func checkIfYouCanAdd(randString string) bool {
 	collection := Client.Database("imgHost").Collection("images")
 	filter := bson.M{"url": randString}
-	var imageUrl ImageScheme
+	var imageUrl models.ImageScheme
 	err := collection.FindOne(context.TODO(), filter).Decode(&imageUrl)
 	if err != nil {
 		if errors.Is(err, mongo.ErrNoDocuments) {

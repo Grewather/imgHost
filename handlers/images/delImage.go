@@ -38,7 +38,7 @@ func DeleteImg(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	err = os.Remove("uploads/" + userinfo.ID + "/" + imgToDelete + ext)
+	err = os.Remove("uploads/" + userinfo.DiscordId + "/" + imgToDelete + ext)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return

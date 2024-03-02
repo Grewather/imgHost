@@ -1,11 +1,12 @@
-package db
+package models
 
 import "go.mongodb.org/mongo-driver/bson/primitive"
 
 type Account struct {
-	ID        primitive.ObjectID `bson:"_id,omitempty"`
-	DiscordId string             `bson:"discord_id"`
-	Username  string             `bson:"username"`
+	ID        string `bson:"_id,omitempty" json:"_id"`
+	DiscordId string `bson:"discord_id" json:"id"`
+	Username  string `bson:"username"`
+	ApiKey    string `bson:"api"`
 }
 
 type ImageScheme struct {
