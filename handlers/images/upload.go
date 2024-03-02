@@ -30,19 +30,17 @@ func Upload(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	if source == "sharex" {
-		userInfo, err := db.GetApiKey(secret)
+		userInfo, err := db.GetDataApiKey(secret)
 		if err != nil {
 			http.Error(w, "Unauthorized", http.StatusUnauthorized)
 			return
 		}
-		fmt.Println(userInfo.ID)
 		file, header, err := r.FormFile("file")
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusBadRequest)
 			return
 		}
 		defer file.Close()
-		fmt.Println("daa")
 
 		extension := filepath.Ext(header.Filename)
 		randString := utils.GetRandomString()
@@ -58,7 +56,6 @@ func Upload(w http.ResponseWriter, r *http.Request) {
 				http.Error(w, err.Error(), http.StatusBadRequest)
 				return
 			}
-			fmt.Println(err.Error())
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}

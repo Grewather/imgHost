@@ -6,23 +6,23 @@ import (
 	"fmt"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
-	"imgHost/models"
 )
 
-func GetApiKey(api string) (models.Account, error) {
-	collection := Client.Database("imgHost").Collection("accounts")
-	filter := bson.M{"api": api}
-	var result models.Account
-	err := collection.FindOne(context.TODO(), filter).Decode(&result)
+func GetApiKey(discordID string) (string, error) {
+	connection := Client.Database("imgHost").Collection("accounts")
+
+	filter := bson.M{"discord_id": discordID}
+	var result struct {
+		ApiKey string `bson:"api"`
+	}
+	err := connection.FindOne(context.Background(), filter).Decode(&result)
 	if err != nil {
 		if errors.Is(err, mongo.ErrNoDocuments) {
-			fmt.Println(err)
-			return models.Account{}, err
+			return "", nil
 		}
-		fmt.Println(err)
-		return models.Account{}, err
+		return "", err
 	}
-	fmt.Println(result)
+	fmt.Println("d")
 
-	return result, nil
+	return result.ApiKey, nil
 }

@@ -56,7 +56,6 @@ form > input[type="text"]{
     font-family: 'Poppins', sans-serif;
     color:white;
 }
-
 .error{
     display: flex;
     flex-direction: column;

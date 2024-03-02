@@ -33,11 +33,24 @@
         <li><a href="/upload">Upload</a></li>
         <li><a href="/gallery">Gallery</a></li>
         <li><a href="https://github.com/Grewather">Source</a></li>
+        <li><a href="#" id="copyApiKey">API Key</a></li>
         <li><a href="/api/auth/discord/logout" >Logout</a></li>
     </ul>
 </footer>
 <script>
-
+    document.getElementById('copyApiKey').addEventListener('click', function(event) {
+        event.preventDefault();
+        let apiKey = "{{ .ApiKey }}";
+        navigator.clipboard.writeText(apiKey).then(function() {
+            let originalText = document.getElementById('copyApiKey').innerText;
+            document.getElementById('copyApiKey').innerText = 'Copied!';
+            setTimeout(function() {
+                document.getElementById('copyApiKey').innerText = originalText;
+            }, 1000);
+        }, (err) => {
+            console.error('Failed to copy API Key: ', err);
+        });
+    });
 </script>
 </body>
 </html>

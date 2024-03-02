@@ -1,14 +1,17 @@
 package route
 
 import (
+	"fmt"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/rs/cors"
 	"html/template"
+	"imgHost/db"
 	"imgHost/handlers/admin"
 	"imgHost/handlers/auth"
 	"imgHost/handlers/images"
 	authMiddleware "imgHost/middleware"
+	"imgHost/utils"
 	"net/http"
 )
 
@@ -35,8 +38,32 @@ func Router() http.Handler {
 			}
 		})
 		r.Get("/upload", func(w http.ResponseWriter, r *http.Request) {
+			cookie, err := r.Cookie("token")
+			fmt.Println(cookie.Value)
+			if err != nil {
+				http.Redirect(w, r, "/", http.StatusSeeOther)
+				return
+			}
+			userInfo, err := utils.GetUserInfo(cookie.Value)
+			if err != nil {
+				http.Redirect(w, r, "/", http.StatusSeeOther)
+				return
+			}
+			res, err := db.GetApiKey(userInfo.DiscordId)
+			if err != nil {
+				fmt.Println(err)
+				http.Redirect(w, r, "/", http.StatusSeeOther)
+				return
+			}
+			userInfo.ApiKey = res
+			data := struct {
+				ApiKey string
+			}{
+				ApiKey: userInfo.ApiKey,
+			}
+
 			tmpl := template.Must(template.ParseFiles("./templates/upload.html"))
-			err := tmpl.Execute(w, nil)
+			err = tmpl.Execute(w, data)
 			if err != nil {
 				panic(err)
 			}
