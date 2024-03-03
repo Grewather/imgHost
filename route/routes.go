@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
-	"github.com/rs/cors"
 	"html/template"
 	"imgHost/db"
 	"imgHost/handlers/admin"
@@ -17,13 +16,7 @@ import (
 
 func Router() http.Handler {
 	r := chi.NewRouter()
-	corsMiddleware := cors.New(cors.Options{
-		AllowedOrigins:   []string{"*"},
-		AllowedMethods:   []string{"GET", "POST", "OPTIONS"},
-		AllowedHeaders:   []string{"Content-Type", "Authorization"},
-		AllowCredentials: true,
-	})
-	r.Use(corsMiddleware.Handler)
+
 	r.Use(middleware.StripSlashes)
 	r.Use(authMiddleware.AuthMiddleware)
 
@@ -39,7 +32,6 @@ func Router() http.Handler {
 		})
 		r.Get("/upload", func(w http.ResponseWriter, r *http.Request) {
 			cookie, err := r.Cookie("token")
-			fmt.Println(cookie.Value)
 			if err != nil {
 				http.Redirect(w, r, "/", http.StatusSeeOther)
 				return

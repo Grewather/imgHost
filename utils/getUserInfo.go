@@ -12,16 +12,13 @@ func GetUserInfo(accessToken string) (models.Account, error) {
 		return models.Account{}, err
 
 	}
-
 	req.Header.Set("Authorization", "Bearer "+accessToken)
-
 	client := &http.Client{}
 	resp, err := client.Do(req)
 	if err != nil {
 		return models.Account{}, err
 	}
 	defer resp.Body.Close()
-
 	var userInfo models.Account
 	err = json.NewDecoder(resp.Body).Decode(&userInfo)
 	if err != nil {

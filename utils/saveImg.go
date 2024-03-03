@@ -9,7 +9,6 @@ import (
 )
 
 func SaveFileToUploads(file io.Reader, userInfo models.Account, extension string, randString string) error {
-	// Check if directory exists
 	_, err := os.Stat("uploads/" + userInfo.DiscordId)
 	if os.IsNotExist(err) {
 		err = os.MkdirAll("uploads/"+userInfo.DiscordId, 0755)
